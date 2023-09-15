@@ -11,8 +11,8 @@ This repository provides a streamlined setup for C++ development in Visual Studi
 
 1. Clone this repository:
 ```bash
-   git clone https://github.com/your-username/VSCode-CPP-DevSetup.git
-   cd VSCode-CPP-DevSetup
+   git clone https://github.com/your-username/VSCode-CPP-DevSetup.git <the-name-u-like>
+   cd <the-name-u-like>
 ```
 
 2. Ensure you have CMake and make installed:
