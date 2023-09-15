@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "INI_CMAKE",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["-Bbuild", "-H."],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "COMP_CPP",
+            "type": "shell",
+            "command": "make",
+            "args": ["-Cbuild", "${fileBasenameNoExtension}_out"],
+            "dependsOn": "INI_CMAKE",
+            "group": "build"
+        }
+    ]
+}
+
+
+
+
+

@@ -1,0 +1,6 @@
+*_out
+*.o
+*.swp
+/CompilerIdCXX
+/CompilerIdC
+/build
