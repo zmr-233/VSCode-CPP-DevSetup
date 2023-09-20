@@ -34,3 +34,25 @@ execute_process(
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_SOURCE_DIR}/CompilerIdC"
     COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_SOURCE_DIR}/CompilerIdCXX"
 )
+
+# 为 'cleanall' 目标添加一个前置步骤，用于删除所有 'bin' 文件夹
+add_custom_target(cleanall_pre
+    COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_SOURCE_DIR}/bin"
+    COMMENT "正在删除 bin 目录..."
+)
+
+# 对于每个包含源文件的目录，将其删除命令添加到 'cleanall_pre' 目标中
+foreach(SOURCE ${DIR_SOURCES})
+    get_filename_component(DIR_NAME ${SOURCE} PATH)
+    get_filename_component(PARENT_DIR_NAME ${DIR_NAME} NAME)
+    add_custom_command(
+        TARGET cleanall_pre
+        COMMAND ${CMAKE_COMMAND} -E remove_directory "${CMAKE_SOURCE_DIR}/${PARENT_DIR_NAME}/bin"
+    )
+endforeach()
+
+# 为 'cleanall' 目标添加一个命令，使其首先执行 'cleanall_pre'，然后执行默认的 'clean' 操作
+add_custom_target(cleanall
+    COMMAND ${CMAKE_BUILD_TOOL} clean
+    DEPENDS cleanall_pre
+)
