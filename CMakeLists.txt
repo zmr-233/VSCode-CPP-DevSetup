@@ -5,6 +5,26 @@ project(IndividualExecutables)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0")
 
+# 设置一个选项来决定是否使用Connector/C++或mysql++
+option(USE_CONNECTOR_CPP "Use Connector/C++ for MySQL support" OFF) # 默认为OFF
+option(USE_MYSQLPP "Use mysql++ for MySQL support" OFF) # 默认为OFF
+
+# 根据上面的选项生成config.h文件
+configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
+
+# 将二进制目录添加到搜索路径，以便我们可以找到config.h
+include_directories(${CMAKE_BINARY_DIR})
+
+# 为Connector/C++添加头文件目录
+if(USE_CONNECTOR_CPP)
+    include_directories(/usr/include/cppconn)
+endif()
+# 为mysql++添加头文件目录
+if(USE_MYSQLPP)
+    include_directories(/usr/include/mysql++)
+    include_directories(/usr/include/mysql)
+endif()
+
 # 收集所有 .cpp 和 .c 文件
 file(GLOB SOURCES "*.cpp" "*.c")
 file(GLOB_RECURSE DIR_SOURCES "*/**.cpp" "*/**.c")
@@ -16,6 +36,15 @@ foreach(SOURCE ${SOURCES})
     # 添加可执行文件目标
     add_executable(${EXECUTABLE_NAME}_out ${SOURCE})
     set_target_properties(${EXECUTABLE_NAME}_out PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+
+    if(USE_CONNECTOR_CPP)
+    target_link_libraries(${EXECUTABLE_NAME}_out mysqlcppconn)
+endif()
+
+if(USE_MYSQLPP)
+    target_link_libraries(${EXECUTABLE_NAME}_out mysqlpp)
+endif()
+
 endforeach()
 
 # 对每个文件夹内的文件进行处理
@@ -26,6 +55,14 @@ foreach(SOURCE ${DIR_SOURCES})
     file(GLOB LOCAL_SOURCES "${DIR_NAME}/*.cpp" "${DIR_NAME}/*.c")
     add_executable(${EXECUTABLE_NAME}_out ${LOCAL_SOURCES})
     set_target_properties(${EXECUTABLE_NAME}_out PROPERTIES RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/${PARENT_DIR_NAME}/bin")
+
+    if(USE_CONNECTOR_CPP)
+    target_link_libraries(${EXECUTABLE_NAME}_out mysqlcppconn)
+endif()
+
+if(USE_MYSQLPP)
+    target_link_libraries(${EXECUTABLE_NAME}_out mysqlpp)
+endif()
 
 endforeach()
 

@@ -1,0 +1,2 @@
+#cmakedefine USE_CONNECTOR_CPP
+#cmakedefine USE_MYSQLPP
